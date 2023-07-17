@@ -4,6 +4,7 @@ import { Redirect, Switch } from "react-router-dom/cjs/react-router-dom.min";
 import { Route } from "react-router-dom/cjs/react-router-dom";
 import Login from "./components/pages/Login";
 import Welcome from "./components/pages/Welcome";
+import UpdateProfile from "./components/pages/profile/UpdateProfile";
 
 const App = () => {
   return (
@@ -21,6 +22,9 @@ const App = () => {
         </Route>
         <Route path="/welcome">
           <Welcome/>
+        </Route>
+        <Route path="/updateprofile">
+         <UpdateProfile/>
         </Route>
         </Switch>
     </>

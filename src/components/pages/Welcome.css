@@ -1,0 +1,13 @@
+.welcome p {
+    font-size: 15px;
+ 
+}
+.welcome button{
+    position: fixed;
+  border: none;
+    right: 0;
+   top: 4%;
+    background-color: lightgray;
+    height: 20px;
+  
+}
