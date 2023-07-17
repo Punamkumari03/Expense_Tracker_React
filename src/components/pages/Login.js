@@ -1,19 +1,23 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import './SignUp.css'
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import AuthContext from "../../store/auth-context";
 
 
-const Signup = () => {
+const Login = () => {
+  const history = useHistory()
+  const authCtx = useContext(AuthContext)
     const emailInputRef = useRef()
     const passwordInputRef = useRef()
-    const confirmPasswordInputRef = useRef()
+   
 
     const submitHandler = (e) =>{
       e.preventDefault()
       const enterdEmail = emailInputRef.current.value;
       const enteredPassword = passwordInputRef.current.value;
-      const enterConfirmPassword = confirmPasswordInputRef.current.value;
-      fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAf4kJs4dH3tVxzeyXGwmfWZhJpArbmmUA',{
+   
+      fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAf4kJs4dH3tVxzeyXGwmfWZhJpArbmmUA',{
         method:'POST',
         body:JSON.stringify({
             email: enterdEmail,
@@ -29,19 +33,23 @@ const Signup = () => {
             } else {
               return res.json().then((data) => {
                 let errorMessage = "Authentication failed";
+
+                throw new Error(errorMessage);
     
-               alert(errorMessage)
               });
             }
           }).then((data)=>{
-            console.log('user is successfully registered')
-          })
+             authCtx.login(data.idToken);
+             history.replace('/welcome')
+          }).catch((err)=>{
+            alert(err.message)
+          });
         
     }
   return (
     <>
       <div className="form-section">
-        <h1>SignUp</h1>
+        <h1>Login</h1>
         <form onSubmit={submitHandler}>
           <div className="control">
             <input type="email" id="email" placeholder="Email" ref={emailInputRef}required />
@@ -55,30 +63,19 @@ const Signup = () => {
               required
             />
           </div>
-          <div className="control">
-            <input
-              type="password"
-              id="C_password"
-              placeholder="Confirm password"
-              ref={confirmPasswordInputRef}
-              required
-            />
-          </div>
           <div className="actions">
-            <button>Sign Up</button>
+            <button>Login</button>
           </div>
         </form>
         <br/>
         <div className="action">
-             <button className="btn">Have an account?
-             <Link to="/login">
-              Login
-              </Link>
-              </button>
+             <button className="btn"> Don't Have an account?
+             <Link to='/signup'>
+              Signup </Link></button>
         </div>
       </div>
     </>
   );
 };
 
-export default Signup;
+export default Login;
