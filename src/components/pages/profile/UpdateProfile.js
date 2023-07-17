@@ -12,13 +12,14 @@ const UpdateProfile = () => {
     const enteredPhotoUrl = photoInputref.current.value;
  
     fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyAf4kJs4dH3tVxzeyXGwmfWZhJpArbmmUA",
+      "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyAf4kJs4dH3tVxzeyXGwmfWZhJpArbmmUA",
       {
         method: "POST",
         body: JSON.stringify({
           idToken: authCtx.token,
           displayName: enteredName,
           photoUrl: enteredPhotoUrl,
+          returnSecureToken: true,
         }),
         headers: {
           "Content-Type": "application/json",
