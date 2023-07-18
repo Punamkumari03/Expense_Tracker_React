@@ -5,6 +5,7 @@ import { Route } from "react-router-dom/cjs/react-router-dom";
 import Login from "./components/pages/Login";
 import Welcome from "./components/pages/Welcome";
 import UpdateProfile from "./components/pages/profile/UpdateProfile";
+import VerificationPage from "./components/pages/VerificationPage";
 
 const App = () => {
   return (
@@ -25,6 +26,9 @@ const App = () => {
         </Route>
         <Route path="/updateprofile">
          <UpdateProfile/>
+        </Route>
+        <Route path="/verify-email">
+         <VerificationPage/>
         </Route>
         </Switch>
     </>
