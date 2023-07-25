@@ -7,6 +7,7 @@ import Welcome from "./components/pages/Welcome";
 import UpdateProfile from "./components/pages/profile/UpdateProfile";
 import VerificationPage from "./components/pages/VerificationPage";
 import FirstPageDetails from "./components/pages/FirstPage";
+import ForgetPassword from "./components/pages/ForgetPassword";
 
 const App = () => {
   return (
@@ -31,6 +32,9 @@ const App = () => {
         </Route>
         <Route path="/verify-email">
          <VerificationPage/>
+        </Route>
+        <Route path="/forgetpassword">
+         <ForgetPassword/>
         </Route>
         </Switch>
     </>

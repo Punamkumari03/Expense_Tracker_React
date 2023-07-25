@@ -40,7 +40,7 @@ const FirstPageDetails = () => {
           )}
           {authCtx.isLoggedIn && (
             <Nav.Link
-              href="/"
+              href="/login"
               className='font'
               style={{ color: "Red" }}
               onClick={logout}

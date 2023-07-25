@@ -67,6 +67,8 @@ const Login = () => {
           <div className="actions">
             <button>Login</button>
           </div>
+          <Link to='/forgetpassword'>
+          <div>Forget passwprd</div></Link>
         </form>
         <br/>
         <div className="action">
