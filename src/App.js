@@ -6,15 +6,17 @@ import Login from "./components/pages/Login";
 import Welcome from "./components/pages/Welcome";
 import UpdateProfile from "./components/pages/profile/UpdateProfile";
 import VerificationPage from "./components/pages/VerificationPage";
+import FirstPageDetails from "./components/pages/FirstPage";
 
 const App = () => {
   return (
     <>
+    <FirstPageDetails/>
      <Switch>
-        <Route path="/" exact>
+        {/* <Route path="/" exact>
         <Redirect to='/signup'/>
          
-        </Route>
+        </Route> */}
         <Route path="/signup">
           <Signup/>
         </Route>
