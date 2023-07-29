@@ -40,8 +40,8 @@ const Login = () => {
             }
           }).then((data)=>{
              authCtx.login(data.idToken);
-            //  history.replace('/welcome')
-            history.replace('/verify-email')
+             history.replace('/add-expense')
+           
           }).catch((err)=>{
             alert(err.message)
           });
