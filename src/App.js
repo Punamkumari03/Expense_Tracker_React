@@ -39,9 +39,9 @@ const App = () => {
         <Route path="/forgetpassword">
          <ForgetPassword/>
         </Route>
-        {/* <Route exact path='/'>
+        <Route exact path='/'>
           {authCtx.isLoggedIn && <Redirect to={"/add-expense"}/>}
-        </Route> */}
+        </Route>
         <Route path="/add-expense">
          {authCtx.isLoggedIn && <AddExpense/>}
          {!authCtx.isLoggedIn && <Redirect to='/login'/> }
