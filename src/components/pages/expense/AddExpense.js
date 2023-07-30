@@ -8,49 +8,112 @@ const AddExpense = () => {
   const descriptionRef = useRef();
   const categoryRef = useRef();
   const [expenses, setExpenses] = useState([]);
+  const [passExpense, setPassExpense] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const emailStoredInLocalStorage = localStorage.getItem("email");
+  const userEmail = emailStoredInLocalStorage
+    ? emailStoredInLocalStorage.replace(/[^\w\s]/gi, "")
+    : "";
+
+  const handleEditedUpdation = () => {
+    const key = localStorage.getItem("keyToEdit");
+
+    const editedExpense = {
+      amount: amountRef.current.value,
+      description: descriptionRef.current.value,
+      category: categoryRef.current.value,
+    };
+    axios
+      .post(
+        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`,
+        editedExpense
+      )
+      .then((res) => {
+        console.log(res.data);
+        setExpenses([...expenses, editedExpense]);
+        setIsEditing(false);
+      })
+      .catch((err) => {
+        console.log("error updating:", err);
+      });
+    amountRef.current.value = "";
+    descriptionRef.current.value = "";
+    categoryRef.current.value = "";
+  };
   useEffect(() => {
-    const emailStoredInLocalStorage = localStorage.getItem("email");
-    const userEmail = emailStoredInLocalStorage
-      ? emailStoredInLocalStorage.replace(/[^\w\s]/gi, "")
-      : "";
     axios
       .get(
         `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`
       )
       .then((res) => {
         if (res.data) {
-          setExpenses(Object.values(res.data));
+          // setExpenses(Object.values(res.data));
+          setPassExpense(res.data);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [expenses]);
   const handleSubmit = (e) => {
     e.preventDefault();
-    const emailStoredInLocalStorage = localStorage.getItem("email");
-    const userEmail = emailStoredInLocalStorage
-      ? emailStoredInLocalStorage.replace(/[^\w\s]/gi, "")
-      : "";
-    
+
     const expenseList = {
       amount: amountRef.current.value,
       description: descriptionRef.current.value,
       category: categoryRef.current.value,
     };
     // setExpenses([...expenses, expenseList]);
-    if(userEmail){
-      axios.post(`https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`,expenseList).then((res)=>{
-        console.log(res)
-        setExpenses([...expenses,expenseList]);
-      }).catch((err)=>{
-        console.log(err);
+
+    axios
+      .post(
+        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`,
+        expenseList
+      )
+      .then((res) => {
+        console.log(res);
+        setExpenses([...expenses, expenseList]);
       })
-    }
+      .catch((err) => {
+        console.log(err);
+      });
+
     console.log(expenseList);
     amountRef.current.value = "";
     descriptionRef.current.value = "";
     categoryRef.current.value = "";
+  };
+  const handleDelete = (key) => {
+    axios
+      .delete(
+        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}/${key}.json`
+      )
+      .then((res) => {
+        console.log("expense successfully deleted");
+        const updateExpense = { ...passExpense };
+        delete updateExpense[key];
+        setPassExpense(updateExpense);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleEdit = (key) => {
+    localStorage.setItem("keyToEdit", key);
+    setIsEditing(true);
+    axios
+      .get(
+        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}/${key}.json`
+      )
+      .then((res) => {
+        amountRef.current.value = res.data.amount;
+        descriptionRef.current.value = res.data.description;
+        categoryRef.current.value = res.data.category;
+        handleDelete(key);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   return (
     <div>
@@ -78,16 +141,23 @@ const AddExpense = () => {
           <Form.Group controlId="category">
             <Form.Label>Category:</Form.Label>
             <Form.Select as="select" ref={categoryRef} required>
-              <option value="Food">--Choose Category--</option>
+              <option value="">--Choose Category--</option>
               <option value="Food">Food</option>
               <option value="Petrol">Petrol</option>
               <option value="Salary">Salary</option>
             </Form.Select>
           </Form.Group>
           <div className="text-center">
-            <Button variant="primary" type="submit" className="mt-3">
-              Add Expense
-            </Button>
+            {!isEditing && (
+              <Button variant="primary" type="submit" className="mt-3">
+                Add Expense
+              </Button>
+            )}
+            {isEditing && (
+              <Button variant="primary" type="submit" className="mt-3" onClick={handleEditedUpdation}>
+                update Expense
+              </Button>
+            )}
           </div>{" "}
         </Form>{" "}
       </div>
@@ -95,17 +165,24 @@ const AddExpense = () => {
       <Table striped bordered hover variant="light" className="container">
         <thead>
           <tr>
+          <th>S.No</th>
             <th>Amount</th>
             <th>Description</th>
             <th>Category</th>
+            <th>Modification</th>
           </tr>
         </thead>
         <tbody>
-          {expenses.map((expense, index) => (
-            <tr key={index}>
-              <td>{expense.amount}</td>
-              <td>{expense.description}</td>
-              <td>{expense.category}</td>
+          {Object.keys(passExpense).map((key, index) => (
+            <tr key={key}>
+            <td>{index +1}</td>
+              <td>{passExpense[key].amount}</td>
+              <td>{passExpense[key].description}</td>
+              <td>{passExpense[key].category}</td>
+              <td>
+                <Button className="m-3" onClick={()=> handleEdit(key)}>Edit</Button>
+                <Button variant="danger" onClick={()=>handleDelete(key)}>Delete</Button>
+              </td>
             </tr>
           ))}
         </tbody>
