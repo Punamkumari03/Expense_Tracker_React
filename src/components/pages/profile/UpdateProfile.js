@@ -2,10 +2,12 @@ import React, { useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./UpdateProfile.css";
 import AuthContext from "../../../store/auth-context";
+import { useSelector } from "react-redux";
 const UpdateProfile = () => {
   const nameInputRef = useRef();
   const photoInputref = useRef();
-  const authCtx = useContext(AuthContext)
+  // const authCtx = useContext(AuthContext)
+  const auth = useSelector(state => state.auth)
   const submitHandler = (e) => {
     e.preventDefault();
     const enteredName = nameInputRef.current.value;
@@ -16,7 +18,7 @@ const UpdateProfile = () => {
       {
         method: "POST",
         body: JSON.stringify({
-          idToken: authCtx.token,
+          idToken: auth.token,
           displayName: enteredName,
           photoUrl: enteredPhotoUrl,
           returnSecureToken: true,

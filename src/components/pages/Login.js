@@ -3,11 +3,16 @@ import './SignUp.css'
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import AuthContext from "../../store/auth-context";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../store/AuthSlice";
 
 
 const Login = () => {
   const history = useHistory()
-  const authCtx = useContext(AuthContext)
+  // const authCtx = useContext(AuthContext)
+  const auth = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+
     const emailInputRef = useRef()
     const passwordInputRef = useRef()
    
@@ -40,7 +45,8 @@ const Login = () => {
             }
           }).then((data)=>{
             // console.log(data.email)
-             authCtx.login(data.idToken,data.email);
+            //  authCtx.login(data.idToken,data.email);
+            dispatch(authActions.login({token:data.idToken,email:data.email}))
              
              
              history.replace('/add-expense')

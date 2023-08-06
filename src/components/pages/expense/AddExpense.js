@@ -2,19 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Form, Table } from "react-bootstrap";
 import "./AddExpense.css";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { expenseActions } from "../../../store/ExpenseSlice";
 
 const AddExpense = () => {
+  const dispatch = useDispatch();
+  let totalAmount = 0;
   const amountRef = useRef();
   const descriptionRef = useRef();
   const categoryRef = useRef();
   const [expenses, setExpenses] = useState([]);
   const [passExpense, setPassExpense] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const emailStoredInLocalStorage = localStorage.getItem("email");
-  const userEmail = emailStoredInLocalStorage
-    ? emailStoredInLocalStorage.replace(/[^\w\s]/gi, "")
-    : "";
-
+  // const emailStoredInLocalStorage = localStorage.getItem("email");
+  // const userEmail = emailStoredInLocalStorage
+  //   ? emailStoredInLocalStorage.replace(/[^\w\s]/gi, "")
+  //   : "";
+const LoggedInEmail = useSelector((state)=> state.auth.userEmail);
+const userEmail = LoggedInEmail.replace(/[@.]/g, "");
   const handleEditedUpdation = () => {
     const key = localStorage.getItem("keyToEdit");
 
@@ -40,21 +45,7 @@ const AddExpense = () => {
     descriptionRef.current.value = "";
     categoryRef.current.value = "";
   };
-  useEffect(() => {
-    axios
-      .get(
-        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`
-      )
-      .then((res) => {
-        if (res.data) {
-          // setExpenses(Object.values(res.data));
-          setPassExpense(res.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [expenses]);
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -115,6 +106,31 @@ const AddExpense = () => {
         console.log(err);
       });
   };
+  useEffect(() => {
+    axios
+      .get(
+        `https://expensetracker-c60cf-default-rtdb.firebaseio.com/${userEmail}.json`
+      )
+      .then((res) => {
+        if (res.data) {
+          // setExpenses(Object.values(res.data));
+          setPassExpense(res.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [expenses]);
+  {
+    Object.keys(passExpense).forEach((key) =>{
+      totalAmount += passExpense[key].amount
+    })
+  }
+  if(totalAmount>10000){
+    dispatch(expenseActions.premium());
+  }else{
+    dispatch(expenseActions.notPremium());
+  }
   return (
     <div>
       <div className="expense">
@@ -187,6 +203,7 @@ const AddExpense = () => {
           ))}
         </tbody>
       </Table>
+      <h1 className="text-black">total Amount:{totalAmount}.00</h1>
     </div>
   );
 };

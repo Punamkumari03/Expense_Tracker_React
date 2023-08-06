@@ -10,9 +10,11 @@ import FirstPageDetails from "./components/pages/FirstPage";
 import ForgetPassword from "./components/pages/ForgetPassword";
 import AddExpense from "./components/pages/expense/AddExpense";
 import AuthContext from "./store/auth-context";
+import { useSelector } from "react-redux";
 
 const App = () => {
-  const authCtx = useContext(AuthContext)
+  // const authCtx = useContext(AuthContext)
+  const isAuth = useSelector(state => state.auth.isLogged)
   return (
     <>
     <FirstPageDetails/>
@@ -40,11 +42,11 @@ const App = () => {
          <ForgetPassword/>
         </Route>
         <Route exact path='/'>
-          {authCtx.isLoggedIn && <Redirect to={"/add-expense"}/>}
+          {isAuth && <Redirect to={"/add-expense"}/>}
         </Route>
         <Route path="/add-expense">
-         {authCtx.isLoggedIn && <AddExpense/>}
-         {!authCtx.isLoggedIn && <Redirect to='/login'/> }
+         {isAuth && <AddExpense/>}
+         {!isAuth && <Redirect to='/login'/> }
         </Route>
         </Switch>
     </>
