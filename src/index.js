@@ -11,7 +11,9 @@ import store from './store/index';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const darkOrNot = localStorage.getItem('dark or not') === 'true';
 root.render(
+  <div className={darkOrNot ? 'dark' : null}>
   <Provider store={store}>
   <AuthContextProvider>
   <BrowserRouter>
@@ -21,6 +23,7 @@ root.render(
   </BrowserRouter>
   </AuthContextProvider>
   </Provider>
+  </div>
 );
 
 // If you want to start measuring performance in your app, pass a function

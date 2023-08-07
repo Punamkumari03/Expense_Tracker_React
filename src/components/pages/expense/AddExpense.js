@@ -37,6 +37,7 @@ const userEmail = LoggedInEmail.replace(/[@.]/g, "");
         console.log(res.data);
         setExpenses([...expenses, editedExpense]);
         setIsEditing(false);
+        window.location.reload();
       })
       .catch((err) => {
         console.log("error updating:", err);
@@ -64,6 +65,7 @@ const userEmail = LoggedInEmail.replace(/[@.]/g, "");
       .then((res) => {
         console.log(res);
         setExpenses([...expenses, expenseList]);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -115,6 +117,7 @@ const userEmail = LoggedInEmail.replace(/[@.]/g, "");
         if (res.data) {
           // setExpenses(Object.values(res.data));
           setPassExpense(res.data);
+          dispatch(expenseActions.receivedData(res.data));
         }
       })
       .catch((error) => {

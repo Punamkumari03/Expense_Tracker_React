@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   // const authCtx = useContext(AuthContext)
-  const isAuth = useSelector(state => state.auth.isLogged)
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   return (
     <>
     <FirstPageDetails/>
@@ -42,11 +42,11 @@ const App = () => {
          <ForgetPassword/>
         </Route>
         <Route exact path='/'>
-          {isAuth && <Redirect to={"/add-expense"}/>}
+          {isAuthenticated && <Redirect to={"/add-expense"}/>}
         </Route>
         <Route path="/add-expense">
-         {isAuth && <AddExpense/>}
-         {!isAuth && <Redirect to='/login'/> }
+         {isAuthenticated && <AddExpense/>}
+         {!isAuthenticated && <Redirect to='/login'/> }
         </Route>
         </Switch>
     </>
